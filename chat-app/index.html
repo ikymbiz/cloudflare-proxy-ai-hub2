@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat — ddashpot</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Chat</h1>
+    <div id="user-button"></div>
+  </header>
+
+  <!-- 未ログイン時に表示される -->
+  <section id="auth-section">
+    <p class="muted">ログインしてご利用ください</p>
+    <div id="sign-in-container"></div>
+  </section>
+
+  <!-- ログイン後に表示される -->
+  <main id="chat-main" hidden>
+    <div class="toolbar">
+      <label>
+        モデル:
+        <select id="model-select">
+          <option value="openai/gpt-4o-mini">GPT-4o mini</option>
+          <option value="anthropic/claude-3-5-haiku-latest">Claude Haiku 3.5</option>
+          <option value="google-ai-studio/gemini-2.5-flash">Gemini 2.5 Flash</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="messages" class="messages"></div>
+
+    <form id="chat-form">
+      <textarea id="prompt" placeholder="メッセージを入力 (Enter で送信、Shift+Enter で改行)" rows="3"></textarea>
+      <button type="submit" id="send-button">送信</button>
+    </form>
+  </main>
+
+  <!-- Clerk SDK -->
+  <!--
+    本番では以下の URL を Clerk ダッシュボードの「API Keys」セクションに表示されている
+    Frontend API URL に置き換える。例:
+    https://clerk.ddashpot.com (本番ドメイン設定後)
+    または開発環境では:
+    https://YOUR_FRONTEND_API.clerk.accounts.dev
+
+    [セキュリティ要件]
+    1. 必ず固定バージョン (例 @5.50.0) を指定する。`@latest` は禁止。
+       理由: Clerk CDN が侵害された場合や、新バージョンに脆弱性が混入した
+       際の "サプライチェーン汚染" を、SRI と組み合わせて遮断するため。
+    2. `integrity` 属性に SRI ハッシュを入れる。
+       生成方法 (バージョン固定後の実 URL に対して 1 回計算する):
+         curl -sL "<上記 src の URL>" \
+           | openssl dgst -sha384 -binary \
+           | openssl base64 -A
+       出力をそのまま `integrity="sha384-..."` に貼る。
+       バージョンを上げるときは必ず再計算する。
+  -->
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="REPLACE_WITH_YOUR_CLERK_PUBLISHABLE_KEY"
+    integrity="sha384-REPLACE_WITH_SRI_HASH"
+    src="https://REPLACE_WITH_YOUR_CLERK_FRONTEND_API.clerk.accounts.dev/npm/@clerk/clerk-js@5.50.0/dist/clerk.browser.js"
+    type="text/javascript"
+  ></script>
+
+  <script src="ai-client.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
