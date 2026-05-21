@@ -1,0 +1,30 @@
+name = "ai-hub"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+# Phase 1.1: 外部公開を遮断 (Service Binding 経由のみ)
+# 旧版は workers.dev URL が叩けたため AI_HUB_KEY 漏洩時に直接悪用可能だった。
+workers_dev = false
+
+[vars]
+# AI Gateway URL (新規作成推奨: 旧 Account ID / Gateway ID は晒されているため)
+AI_GATEWAY_URL = "https://gateway.ai.cloudflare.com/v1/YOUR_ACCOUNT_ID/YOUR_GATEWAY_ID/compat/chat/completions"
+
+# --- KV ---
+# 作成: wrangler kv namespace create "KEYS_KV"
+[[kv_namespaces]]
+binding = "KEYS_KV"
+id = "REPLACE_WITH_YOUR_KV_ID"
+
+# --- Durable Object: アトミックなレート制限 / 月次利用量カウント ---
+# 旧版の KV ベース read-modify-write は race condition があったため DO に変更
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+# --- シークレット ---
+# wrangler secret put CF_AIG_TOKEN
