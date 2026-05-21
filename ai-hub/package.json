@@ -1,0 +1,13 @@
+{
+  "name": "ai-hub",
+  "version": "2.0.0",
+  "description": "Internal AI proxy worker for ddashpot",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
