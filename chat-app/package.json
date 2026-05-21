@@ -1,0 +1,13 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ddashpot chat single-app (deployed as Cloudflare Pages)",
+  "scripts": {
+    "sync": "node scripts/sync-frontend-lib.mjs",
+    "check:sync": "node scripts/sync-frontend-lib.mjs --check",
+    "check:html": "node scripts/check-html.mjs",
+    "check": "npm run check:sync && npm run check:html",
+    "build": "npm run check"
+  }
+}
