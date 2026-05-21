@@ -1,0 +1,17 @@
+{
+  "name": "api-backend",
+  "version": "1.0.0",
+  "description": "Common backend for ddashpot AI apps - Clerk auth + ai-hub relay",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --env dev",
+    "predeploy": "node ./scripts/check-config.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@clerk/backend": "^1.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
