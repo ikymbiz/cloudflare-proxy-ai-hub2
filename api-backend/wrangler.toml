@@ -1,0 +1,48 @@
+name = "api-backend"
+main = "index.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# カスタムドメイン:
+# routes = [
+#   { pattern = "api.ddashpot.com/*", custom_domain = true }
+# ]
+
+# --- 本番用 vars ---
+# Phase 1.2: AUTHORIZED_PARTIES が空のままデプロイすると azp 検証がスキップされ、
+# 別 origin で発行された JWT が通り得る。scripts/check-config.mjs (predeploy) で
+# このセクションを検査し、空ならデプロイ自体を失敗させる。
+[vars]
+ENVIRONMENT = "production"
+AUTHORIZED_PARTIES = "https://chat.ddashpot.com"
+
+# --- ai-hub への Service Binding ---
+[[services]]
+binding = "AI_HUB"
+service = "ai-hub"
+
+# --- Durable Object: per-user レート制限 + 月次トークン上限 (Phase 2.1) ---
+[[durable_objects.bindings]]
+name = "USER_RATE_LIMITER"
+class_name = "UserRateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["UserRateLimiter"]
+
+# --- 開発環境 (`wrangler dev --env dev`) ---
+[env.dev.vars]
+ENVIRONMENT = "development"
+AUTHORIZED_PARTIES = "http://localhost:8000,http://localhost:3000"
+
+[[env.dev.services]]
+binding = "AI_HUB"
+service = "ai-hub"
+
+[[env.dev.durable_objects.bindings]]
+name = "USER_RATE_LIMITER"
+class_name = "UserRateLimiter"
+
+# --- シークレット (wrangler secret put で登録) ---
+#   wrangler secret put CLERK_SECRET_KEY
+#   wrangler secret put AI_HUB_KEY
